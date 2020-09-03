@@ -6,39 +6,25 @@ const fs = require("fs");
 const readFileAsync = util.promisify(fs.readFile);
 const writefileAsync = util.promisify(fs.writeFile);
 const id = require('uniqid');
-var notes = require("./db/db.json")
-
-//<---------------TO DO--------------->
-
-//Pull notes from db.json and add them to the saved window. when saving a note, add it to the saved window above the previous note.
-//add delete button functionality
-
+let notes = require("./db/db.json")
 const PORT = process.env.PORT || 8888;
+
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/api/notes", function (req, res) {
-    return res.json(notes);
-});
+app.get("/api/notes", (req, res) => res.json(notes));
 
-app.get("api/notes/id", function (req, res) {
-    return res.json(notes);
-});
-
+app.get("api/notes/id", (req, res) => res.json(notes));
 
 app.delete("/api/notes/:id", function (req, res) {
-    notes = notes.filter(function (notes) {
-        return notes.id !== req.params.id;
-
-    });
+    notes = notes.filter (notes => notes.id !== req.params.id);
     fs.writeFile(path.join(__dirname, "./db/db.json"), JSON.stringify(notes), "utf8", function (err) {
         if (err) throw err;
         res.json(notes)
     });
 });
-
 
 app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "public/notes.html"))
