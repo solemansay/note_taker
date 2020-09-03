@@ -17,6 +17,10 @@
 
   <img src= "assets/homeScreen.png" alt = "Home screen">
 
+The user must press the get started button to access the note taking screen.
+
+  <img src= "assets/noteScreen.png" alt = "Note taking screen">
+
   Once all of the fields are filled out, the user can save their note to be viewed later and or deleted forever from both the db.json file and left window containing the saved notes.
 
   ## Table of Contents 
