@@ -6,7 +6,7 @@ const fs = require("fs");
 const readFileAsync = util.promisify(fs.readFile);
 const writefileAsync = util.promisify(fs.writeFile);
 const id = require('uniqid');
-const notes = require("./db/db.json")
+var notes = require("./db/db.json")
 
 //<---------------TO DO--------------->
 
@@ -19,12 +19,24 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/api/notes", function (req, res){
-        return res.json(notes);
+app.get("/api/notes", function (req, res) {
+    return res.json(notes);
 });
 
-app.get("api/notes/" + id, function (req, res){
+app.get("api/notes/id", function (req, res) {
     return res.json(notes);
+});
+
+
+app.delete("/api/notes/:id", function (req, res) {
+    notes = notes.filter(function (notes) {
+        return notes.id !== req.params.id;
+
+    });
+    fs.writeFile(path.join(__dirname, "./db/db.json"), JSON.stringify(notes), "utf8", function (err) {
+        if (err) throw err;
+        res.json(notes)
+    });
 });
 
 
@@ -44,6 +56,7 @@ app.post("/api/notes", function (req, res) {
     const newNote = req.body
 
     newNote.id = id("");
+
     console.log(newNote.id)
 
     notes.push(newNote);
@@ -52,8 +65,8 @@ app.post("/api/notes", function (req, res) {
 
     writefileAsync("./db/db.json", JSON.stringify(newNote));
 
-    fs.writeFile(path.join(__dirname, "./db/db.json"), JSON.stringify([...notes]), "utf8", function(err){
-        if(err) throw err;
+    fs.writeFile(path.join(__dirname, "./db/db.json"), JSON.stringify([...notes]), "utf8", function (err) {
+        if (err) throw err;
         res.json([notes])
     });
 });
